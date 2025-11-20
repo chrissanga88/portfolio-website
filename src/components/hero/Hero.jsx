@@ -1,4 +1,3 @@
-import Image from "react-bootstrap/image";
 import Container from "react-bootstrap/Container";
 import TextAnimation from "../animations/TextAnimation";
 
