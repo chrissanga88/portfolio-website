@@ -1,9 +1,11 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import { AiFillLinkedin, AiFillGithub } from 'react-icons/ai';
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { fetchAuthSession, signOut } from '@aws-amplify/auth';
 import './header.css';
 
 function Header({isWhite = false}) {
@@ -12,6 +14,28 @@ function Header({isWhite = false}) {
   const textColor = isWhite ? 'text-black' : 'text-white';
   const toggleVariant = isWhite ? 'custom-toggler-black' : 'custom-toggler-white'
   const logoSrc = isWhite ? '/chris_logo_white.png' : '/chris_logo_black.png';
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  // Check if user is logged in
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const session = await fetchAuthSession();
+        setIsLoggedIn(!!session?.tokens?.idToken);
+      } catch {
+        setIsLoggedIn(false);
+      }
+    }
+    checkAuth();
+  }, []);
+
+  async function handleLogout() {
+    await signOut();
+    setIsLoggedIn(false);
+    navigate("/"); // redirect to home
+  }
 
   return (
     <Navbar expand="lg" className={`${navbarBG} py-0`}>
@@ -44,6 +68,21 @@ function Header({isWhite = false}) {
           <Nav className="ms-auto">
             <Nav.Link href="https://www.linkedin.com/in/christopher-sanga-54461527/" target="_blank"><AiFillLinkedin className={`hover-grow ${textColor}`} size="2em"/></Nav.Link>
             <Nav.Link href="https://github.com/chrissanga88" target="_blank"><AiFillGithub className={`hover-grow ${textColor}`} size="1.9em"/></Nav.Link>
+            {!isLoggedIn ? (
+              <NavLink
+              to="/login"
+              className={`nav-link hover-grow ${textColor}`}>
+                Login
+              </NavLink>
+            ) : (
+              <span
+                onClick={handleLogout}
+                className={`nav-link hover-grow ${textColor}`}
+                style={{ cursor: "pointer" }}
+              >
+                Logout
+              </span>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

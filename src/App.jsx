@@ -5,6 +5,7 @@ import AdventurePage from './pages/Adventure';
 import RootLayout from './pages/Root';
 import ErrorPage from './pages/Error';
 import ProjectsPage from './pages/Projects';
+import LoginPage from './pages/Login';
 
 // an array of route definition objects is passed to the createBrowserRouter function. Each object represents one route.
 const router = createBrowserRouter([
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       { path: '/', element: <HomePage />},
       { path: '/projects', element: <ProjectsPage />},
       { path: '/adventure', element: <AdventurePage />},
+      { path: '/login', element: <LoginPage />},
     ],
   }
 ]);
